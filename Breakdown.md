@@ -3,3 +3,7 @@
 Jag hade tänkt mig att göra ett program som fungerar som ett adminprogramm på ett zoo för djuren och personalen. Det ska vara en huvudklass för personalen med flera arvklasser som beroende på vad personen har för jobb har olika metoder. Det ska vara en huvud klass för djuren med mindre klasser för olika släkten av djur. Inte för mycket klasser för djuren efterrsom det finn miljontals olika vilket skulle vara orimligt för den här uppgiften men den kan delas upp i några av grenarna i släktträdet. Tanken är att det ska gå att lägga till eller ta bort djur eller personal i excell filer med information om dem.
 
 Implementera "http://www.randomnumberapi.com/api/v1.0/random?min=100&max=1000&count=5" API:n med förslag för vad man kan göra i parken. Förslagen kan skrivas upp i ett dictionary.
+
+Använd excell python library.
+
+Generiska klasser.
