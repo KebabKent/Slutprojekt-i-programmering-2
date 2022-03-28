@@ -40,7 +40,7 @@ Om du anv채nder programmet f책r du g채rna ange mig som en Contributor men det g�
 
 
 ## Projektet 채r f채rdigt
-Projektet 채r f채rdigt och blev klart 2022-02-24
+Projektet 채r f채rdigt och blev klart datum.
 
 
 ## Licens (License)
