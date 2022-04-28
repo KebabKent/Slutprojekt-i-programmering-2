@@ -5,58 +5,30 @@ from getpwd import getpwd
 
 
 """ Klasser för anställda """
-class Employee:
-    def __init__(self, name, password):
+class Bank:
+    def __init__(self, name, password, proffession):
         self.name = name
-        self.password = password
+        self.__password = password
+        self.proffession = proffession
         """ Här ska alla metoder som båda klasserna har gemensamma vara """
+    
+    def return_password(self):
+        return self.__password
 
 
-class Admin(Employee):
-    def __init__(self, name, password):
-        super().__init__(name, password)
+class Admin(Bank):
+    def __init__(self, name, password, proffession):
+        super().__init__(name, password, proffession)
         # Ärv metoder som admin ska komma åt
 
-class User(Employee):
-    def __init__(self, name, password, proffesion):
-        super().__init__(name, password)
-        self.proffesion = proffesion
+class User(Bank):
+    def __init__(self, name, password, proffession):
+        super().__init__(name, password, proffession)
         # Ärv metoder som user ska komma åt
 
-
-
-""" Klasser för att sortera djuren """
-class Animal:
-    def __init__(self, name, family, genus):
-        self.name = name
-        self.family = family
-        self.genus = genus
-
-class Fish(Animal):
-    def __init__(self, name, family, genus, count):
-        super().__init__(name, family, genus)
-        self.count = count
-        
-class Amphibian(Animal):
-   def __init__(self, name, family, genus, count):
-        super().__init__(name, family, genus)
-        self.count = count
-
-class Reptile(Animal):
-   def __init__(self, name, family, genus, count):
-        super().__init__(name, family, genus)
-        self.count = count
-
-class Bird(Animal):
-    def __init__(self, name, family, genus, count):
-        super().__init__(name, family, genus)
-        self.count = count
-
-class Mammal(Animal):
-   def __init__(self, name, family, genus, count):
-        super().__init__(name, family, genus)
-        self.count = count
-print('din mamma')
+class Underage_user(Bank):
+    def __init__(self,name, password, proffession):
+        super().__init__(name, password, proffession)
 
 
 
@@ -69,35 +41,39 @@ def login():
     anv_nam = str(input('Username: '))
 
     for x in range(1, max_ro + 1):
-        for i in range(3):
-            anv = sheet_obj.cell(row = x, column = 1)
+        anv = sheet_obj.cell(row = x, column = 1)
 
-            if anv.value == anv_nam:
-                password = getpwd() #Frågar om lösenord och gör så att man inte ser vad som skrivs in
-                print(password)
-                pass_check = sheet_obj.cell(row = x, column = 3)
+        if anv.value == anv_nam:
+            password = getpwd() #Frågar om lösenord och gör så att man inte ser vad som skrivs in
+            print(password) # Göra så att man kan välja att se lösenordet innan man skriver in det
+            pass_check = sheet_obj.cell(row = x, column = 3)
 
-                if password == pass_check.value:
-                    print('Du hade rätt lösenord')
+            if password == pass_check.value:
+                print('Du hade rätt lösenord')
 
-                    """ Gör ett klass objekt av användaren """
+                """ Gör ett klass objekt av användaren """
 
-                    role = sheet_obj.cell(row = x, column = 5)
+                role = sheet_obj.cell(row = x, column = 5)
+                profession = sheet_obj.cell(row = x, column = 6)
+                
+                if role.value == 'User':
+                    print('User')
+                    logged_in_user = User(anv_nam, pass_check.value, profession.value)
+                    print(logged_in_user.proffession, logged_in_user.return_password())
+                    return logged_in_user
+                
+                elif role.value == 'Underage_user':
+                    print('Underage_user')
+                    logged_in_user = Underage_user(anv_nam, pass_check.value, profession.value)
+                    print(logged_in_user.proffession, logged_in_user.return_password())
+                    return logged_in_user
 
-                    if role.value == 'User':
-                        print('User')
-                        profession = sheet_obj.cell(row = x, column = 6)
-                        logged_in_user = User(anv_nam, pass_check.value, profession.value)  
-                        
-                        print(logged_in_user.proffesion, logged_in_user.password)
-                    
+                elif role.value == 'Admin':
+                    print('Admin')
+                    logged_in_user = Admin(anv_nam, pass_check.value, profession.value)
+                    return logged_in_user
 
-                    elif role.value == 'Admin':
-                        print('Admin')
-                        logged_in_user = Admin(anv_nam, pass_check.value)
-
-
-                    break
+                break
 
 
 
