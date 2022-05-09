@@ -1,6 +1,7 @@
 import requests
 import openpyxl
 from getpwd import getpwd
+import time
 
 
 
@@ -56,24 +57,24 @@ def login():
     sheet_obj = wb_obj.active
     max_ro = sheet_obj.max_row
 
-
-
     """ Kollar om användaren finns och vart den finns"""
+    print('\n<--Logga in-->')
     for i in range(3):
         anv_nam = str(input('Username: '))
 
         for xx in range(1, max_ro +1):
             anv = sheet_obj.cell(row = xx, column = 1)
             if anv.value == anv_nam:
-                print('Användaren finns')
+                print('Användaren finns\n')
+                time.sleep(0.5)
                 break
         
         if anv.value == anv_nam:
             break
+
         else:
-            print('Användaren finns inte försök igen')
-
-
+            print('\nAnvändaren finns inte försök igen\n')
+            time.sleep(0.5)
 
     """ Tar lösenordet och loggar in användaren med användarnamnet """
     if anv.value == anv_nam:
@@ -95,27 +96,51 @@ def login():
                     row = xx
                     
                     if role.value == 'User':
-                        print('User')
+                        print('In loggad som User')
                         logged_in_user = User(anv_nam, pass_check.value, profession.value, row)
-                        print(logged_in_user.proffession, logged_in_user.return_password())
+                        #print(logged_in_user.proffession, logged_in_user.return_password())
                         return logged_in_user
                     
                     elif role.value == 'Underage_user':
-                        print('Underage_user')
+                        print('In loggad som Underage_user')
                         logged_in_user = Underage_user(anv_nam, pass_check.value, profession.value, row)
-                        print(logged_in_user.proffession, logged_in_user.return_password())
+                        #print(logged_in_user.proffession, logged_in_user.return_password())
                         return logged_in_user
 
                     elif role.value == 'Admin':
-                        print('Admin')
+                        print('In loggad som Admin')
                         logged_in_user = Admin(anv_nam, pass_check.value, profession.value, row)
                         return logged_in_user
                     break
 
 
 
-def program_loop():
-    print('din mamma ligger på pizza')
+def skapa_ny_anvandare():
+    """ Här ska programmet göra en ny användare genom att lägga in användaren i excell dokumentet"""
+    print('gay shit (bokstavligt talat)')
+    time.sleep(0.5)
+    pass
+    
+
+
+def program_loop(user):
+    while True:
+        move_ans = int(input('\n<------------Vad vill du göra?------------>' + 
+                        '\ngreg 1 (1)' + 
+                        '\ngrej 2 (2)' + 
+                        '\nLogga ut (3)' + 
+                        '\nSvar: '))
+        if move_ans == 1:
+            break
+
+        elif move_ans == 2:
+            break
+
+        elif move_ans == 3:
+            break
+
+        else:
+            print('Ditt svar är inte giltigt försök igen!')
 
 
 
@@ -131,10 +156,28 @@ if __name__ == '__main__':
     Här ska de anställda hämtas in från excell filen med hjälp av 
     pythons excell bibliotek. En klass användare per anställd.
     """
-    user = login()
-    program_loop()
-    #get_num()
-    print('Ligger på rad: ', user.return_row())
+    while True:
+        log_not = int(input('\n<------------Huvudmeny------------>'+
+                        '\nLogga in (1)' +
+                        '\nSkapa ny användare (2)' 
+                        '\nAvsluta programm (3)' + 
+                        '\nSvar: '))
 
+        if log_not == 1:
+            user = login()
+            program_loop(user)
+            #get_num()
+            print('Ligger på rad: ', user.return_row(), ' i excel dokumentet.')
+        
+        elif log_not == 2:
+            skapa_ny_anvandare()
+        
+        elif log_not == 3:
+            print('Hej då!')
+            break
 
+        else:
+            print('Ditt svar är inte tillgängligt var god försök igen!')
 
+        
+       
