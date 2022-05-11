@@ -7,47 +7,52 @@ import time
 
 """ Klasser för anställda """
 class Bank:
-    def __init__(self, name, password, proffession, row):
+    def __init__(self, name, password, role, row):
         self.name = name
         self.__password = password
-        self.proffession = proffession
+        self.role = role
         self.row = row
-        """ Här ska alla metoder som båda klasserna har gemensamma vara """
+        """ Här ska alla metoder som alla klasserna har gemensamma vara """
     
     def return_password(self):
         return self.__password
     
     def return_row(self):
         return self.row
+    
+    def return_role(self):
+        return self.role
 
 class Admin(Bank):
-    def __init__(self, name, password, proffession, row):
-        super().__init__(name, password, proffession, row)
+    def __init__(self, name, password, role, row):
+        super().__init__(name, password, role, row)
         # Ärv metoder som admin ska komma åt
     
     def shange_password(self):
         pass
 
-    def shange_user_password():
+    def check_user_balance():
         pass
 
 class User(Bank):
-    def __init__(self, name, password, proffession, row):
-        super().__init__(name, password, proffession, row)
+    def __init__(self, name, password, role, row, balance):
+        super().__init__(name, password, role, row)
+        self.balance = balance
         # Ärv metoder som user ska komma åt
     
     def shange_password(self):
         pass
 
     def check_account_balance(self):
-        pass
+        return self.balance
 
 class Underage_user(Bank):
-    def __init__(self,name, password, proffession, row):
-        super().__init__(name, password, proffession, row)
+    def __init__(self,name, password, role, row, balance):
+        super().__init__(name, password, role, row)
+        self.balance = balance
 
-    def check_account_balance(self):
-        pass
+    def check_account_balance(self): # Ska bara kunna kolla hur myket pengar som finns.
+        return self.balance
 
 
 
@@ -71,9 +76,13 @@ def login():
         
         if anv.value == anv_nam:
             break
+        
+        elif i<2:
+            print('\nAnvändaren finns inte försök igen!\n')
+            time.sleep(0.5)
 
         else:
-            print('\nAnvändaren finns inte försök igen\n')
+            print('\nAnvändaren finns inte!\n')
             time.sleep(0.5)
 
     """ Tar lösenordet och loggar in användaren med användarnamnet """
@@ -92,24 +101,25 @@ def login():
                     """ Gör ett klass objekt av användaren """
 
                     role = sheet_obj.cell(row = xx, column = 5)
-                    profession = sheet_obj.cell(row = xx, column = 6)
                     row = xx
                     
                     if role.value == 'User':
                         print('In loggad som User')
-                        logged_in_user = User(anv_nam, pass_check.value, profession.value, row)
-                        #print(logged_in_user.proffession, logged_in_user.return_password())
+                        balance = sheet_obj.cell(row = xx, column = 4)
+                        logged_in_user = User(anv_nam, pass_check.value, role.value, row, int(balance.value))
+                        #print(logged_in_user.role, logged_in_user.return_password())
                         return logged_in_user
                     
                     elif role.value == 'Underage_user':
                         print('In loggad som Underage_user')
-                        logged_in_user = Underage_user(anv_nam, pass_check.value, profession.value, row)
-                        #print(logged_in_user.proffession, logged_in_user.return_password())
+                        balance = sheet_obj.cell(row = xx, column = 4)
+                        logged_in_user = Underage_user(anv_nam, pass_check.value, role.value, row, int(balance.value))
+                        #print(logged_in_user.role, logged_in_user.return_password())
                         return logged_in_user
 
                     elif role.value == 'Admin':
                         print('In loggad som Admin')
-                        logged_in_user = Admin(anv_nam, pass_check.value, profession.value, row)
+                        logged_in_user = Admin(anv_nam, pass_check.value, role.value, row)
                         return logged_in_user
                     break
 
@@ -123,23 +133,69 @@ def skapa_ny_anvandare():
     
 
 
-def program_loop(user):
+def admin_loop(user):
     while True:
-        move_ans = int(input('\n<------------Vad vill du göra?------------>' + 
-                        '\ngreg 1 (1)' + 
-                        '\ngrej 2 (2)' + 
-                        '\nLogga ut (3)' + 
-                        '\nSvar: '))
-        if move_ans == 1:
-            break
+        try:
+            move_ans = int(input('\n<------------Vad vill du göra?------------>' + 
+                            '\ngerj 1 (1)' + 
+                            '\ngrej 2 (2)' + 
+                            '\nLogga ut (3)' + 
+                            '\nSvar: '))
 
-        elif move_ans == 2:
-            break
+            if move_ans == 1:
+                break
 
-        elif move_ans == 3:
-            break
+            elif move_ans == 2:
+                break
 
-        else:
+            elif move_ans == 3:
+                break
+
+        except:
+            print('Ditt svar är inte giltigt försök igen!')
+
+
+
+def user_loop(user):
+    while True:
+        try:
+            move_ans = int(input('\n<------------Vad vill du göra?------------>' + 
+                            '\nMoney money money money... MONEY!(I falsett) (1)' + 
+                            '\ngrej 2 (2)' + 
+                            '\nLogga ut (3)' + 
+                            '\nSvar: '))
+
+            if move_ans == 1:
+                print('\nDet finns: ', user.check_account_balance(), ' svenska riksdaler på kontot.')
+                time.sleep(0.5)
+
+            elif move_ans == 2:
+                break
+
+            elif move_ans == 3:
+                break
+
+        except:
+            print('Ditt svar är inte giltigt försök igen!')
+
+
+
+def underage_user_loop(user):
+    while True:
+        try:
+            move_ans = int(input('\n<------------Vad vill du göra?------------>' + 
+                            '\nMoney money money money... MONEY!(I falsett) (1)' + 
+                            '\nLogga ut (2)' + 
+                            '\nSvar: '))
+
+            if move_ans == 1:
+                print('\nDet finns: ', user.check_account_balance(), ' svenska riksdaler på kontot.')
+                time.sleep(0.5)
+
+            elif move_ans == 2:
+                break
+
+        except:
             print('Ditt svar är inte giltigt försök igen!')
 
 
@@ -157,27 +213,38 @@ if __name__ == '__main__':
     pythons excell bibliotek. En klass användare per anställd.
     """
     while True:
-        log_not = int(input('\n<------------Huvudmeny------------>'+
-                        '\nLogga in (1)' +
-                        '\nSkapa ny användare (2)' 
-                        '\nAvsluta programm (3)' + 
-                        '\nSvar: '))
+        try:
+            log_not = int(input('\n<------------Huvudmeny------------>'+
+                            '\nLogga in (1)' +
+                            '\nSkapa ny användare (2)' 
+                            '\nAvsluta programm (3)' + 
+                            '\nSvar: '))
 
-        if log_not == 1:
-            user = login()
-            program_loop(user)
-            #get_num()
-            print('Ligger på rad: ', user.return_row(), ' i excel dokumentet.')
-        
-        elif log_not == 2:
-            skapa_ny_anvandare()
-        
-        elif log_not == 3:
-            print('Hej då!')
-            break
+            if log_not == 1:
+                user = login()
 
-        else:
+                if user.return_role() == 'User':
+                    user_loop(user)
+                
+                elif user.return_role() == 'Underage_user':
+                    underage_user_loop(user)
+
+                elif user.return_role() == 'Admin':
+                    admin_loop()
+
+                #get_num()
+                #print('Ligger på rad: ', user.return_row(), ' i excel dokumentet.')
+            
+            elif log_not == 2:
+                skapa_ny_anvandare()
+            
+            elif log_not == 3:
+                print('Hej då!')
+                break
+
+        except:
             print('Ditt svar är inte tillgängligt var god försök igen!')
+            time.sleep(3)
 
-        
-       
+
+
