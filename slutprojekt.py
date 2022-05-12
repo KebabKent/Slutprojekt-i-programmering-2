@@ -57,7 +57,7 @@ class Underage_user(Bank):
 
 
 def login():
-    path = "C:/Users/nikodemus.nilssonoh/Documents/Programmering/Github/Slutprojekt-i-programmering-2/Employees.xlsx"
+    path = "./Employees.xlsx"
     wb_obj = openpyxl.load_workbook(path)
     sheet_obj = wb_obj.active
     max_ro = sheet_obj.max_row
@@ -65,16 +65,53 @@ def login():
     """ Kollar om användaren finns och vart den finns"""
     print('\n<--Logga in-->')
     for i in range(3):
-        anv_nam = str(input('Username: '))
+        anv_nam = str(input('Förnamn: '))
+        anv_eft_nam = str(input('Efternamn: '))
 
         for xx in range(1, max_ro +1):
-            anv = sheet_obj.cell(row = xx, column = 1)
-            if anv.value == anv_nam:
+            anv_n = sheet_obj.cell(row = xx, column = 1)
+            anv_eft_n = sheet_obj.cell(row = xx, column = 2)
+
+            if anv_n.value == anv_nam and anv_eft_n.value == anv_eft_nam:
                 print('Användaren finns\n')
                 time.sleep(0.5)
+
+                """ Tar lösenordet och loggar in användaren med användarnamnet """
+                for ii in range(3):
+                    password = getpwd() #Frågar om lösenord och gör så att man inte ser vad som skrivs in
+                    print(password) # Göra så att man kan välja att se lösenordet innan man skriver in det
+                    pass_check = sheet_obj.cell(row = xx, column = 3)
+
+                    if password == pass_check.value:
+                        print('Du hade rätt lösenord')
+
+                        """ Gör ett klass objekt av användaren """
+
+                        role = sheet_obj.cell(row = xx, column = 5)
+                        row = xx
+                        
+                        if role.value == 'User':
+                            print('In loggad som User')
+                            balance = sheet_obj.cell(row = xx, column = 4)
+                            logged_in_user = User(anv_n, pass_check.value, role.value, row, int(balance.value))
+                            #print(logged_in_user.role, logged_in_user.return_password())
+                            return logged_in_user
+                        
+                        elif role.value == 'Underage_user':
+                            print('In loggad som Underage_user')
+                            balance = sheet_obj.cell(row = xx, column = 4)
+                            logged_in_user = Underage_user(anv_n, pass_check.value, role.value, row, int(balance.value))
+                            #print(logged_in_user.role, logged_in_user.return_password())
+                            return logged_in_user
+
+                        elif role.value == 'Admin':
+                            print('In loggad som Admin')
+                            logged_in_user = Admin(anv_n, pass_check.value, role.value, row)
+                            return logged_in_user
+                        break
                 break
         
-        if anv.value == anv_nam:
+        if anv_n.value == anv_nam and anv_eft_n.value == anv_eft_nam:
             break
         
         elif i<2:
@@ -85,51 +122,12 @@ def login():
             print('\nAnvändaren finns inte!\n')
             time.sleep(0.5)
 
-    """ Tar lösenordet och loggar in användaren med användarnamnet """
-    if anv.value == anv_nam:
-        for ii in range(3):
-            anv = sheet_obj.cell(row = xx, column = 1)
-
-            if anv.value == anv_nam:
-                password = getpwd() #Frågar om lösenord och gör så att man inte ser vad som skrivs in
-                print(password) # Göra så att man kan välja att se lösenordet innan man skriver in det
-                pass_check = sheet_obj.cell(row = xx, column = 3)
-
-                if password == pass_check.value:
-                    print('Du hade rätt lösenord')
-
-                    """ Gör ett klass objekt av användaren """
-
-                    role = sheet_obj.cell(row = xx, column = 5)
-                    row = xx
-                    
-                    if role.value == 'User':
-                        print('In loggad som User')
-                        balance = sheet_obj.cell(row = xx, column = 4)
-                        logged_in_user = User(anv_nam, pass_check.value, role.value, row, int(balance.value))
-                        #print(logged_in_user.role, logged_in_user.return_password())
-                        return logged_in_user
-                    
-                    elif role.value == 'Underage_user':
-                        print('In loggad som Underage_user')
-                        balance = sheet_obj.cell(row = xx, column = 4)
-                        logged_in_user = Underage_user(anv_nam, pass_check.value, role.value, row, int(balance.value))
-                        #print(logged_in_user.role, logged_in_user.return_password())
-                        return logged_in_user
-
-                    elif role.value == 'Admin':
-                        print('In loggad som Admin')
-                        logged_in_user = Admin(anv_nam, pass_check.value, role.value, row)
-                        return logged_in_user
-                    break
-
 
 
 def skapa_ny_anvandare():
     """ Här ska programmet göra en ny användare genom att lägga in användaren i excell dokumentet"""
     print('gay shit (bokstavligt talat)')
     time.sleep(0.5)
-    pass
     
 
 
@@ -137,13 +135,13 @@ def admin_loop(user):
     while True:
         try:
             move_ans = int(input('\n<------------Vad vill du göra?------------>' + 
-                            '\ngerj 1 (1)' + 
+                            '\nSkapa ny användare (1)' + 
                             '\ngrej 2 (2)' + 
                             '\nLogga ut (3)' + 
                             '\nSvar: '))
 
             if move_ans == 1:
-                break
+                skapa_ny_anvandare()
 
             elif move_ans == 2:
                 break
@@ -216,8 +214,7 @@ if __name__ == '__main__':
         try:
             log_not = int(input('\n<------------Huvudmeny------------>'+
                             '\nLogga in (1)' +
-                            '\nSkapa ny användare (2)' 
-                            '\nAvsluta programm (3)' + 
+                            '\nAvsluta programm (2)' + 
                             '\nSvar: '))
 
             if log_not == 1:
@@ -230,15 +227,12 @@ if __name__ == '__main__':
                     underage_user_loop(user)
 
                 elif user.return_role() == 'Admin':
-                    admin_loop()
+                    admin_loop(user)
 
                 #get_num()
                 #print('Ligger på rad: ', user.return_row(), ' i excel dokumentet.')
             
             elif log_not == 2:
-                skapa_ny_anvandare()
-            
-            elif log_not == 3:
                 print('Hej då!')
                 break
 
