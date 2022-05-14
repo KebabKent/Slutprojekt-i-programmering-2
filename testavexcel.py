@@ -1,5 +1,6 @@
 # Python program to read an excel file
- 
+
+"""
 # import openpyxl module
 import openpyxl
  
@@ -51,5 +52,10 @@ for x in range(1, max_ro + 1):
             if password == pass_check.value:
                 print('Du hade rätt lösenord')
                 break
-    
+"""
 
+import requests
+
+x = requests.get('http://worldtimeapi.org/api/timezone/Europe/Stockholm')
+gg = x.json()
+print(gg['datetime'])

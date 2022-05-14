@@ -56,6 +56,7 @@ class Underage_user(Bank):
 
 
 
+""" Loggar in användaren """
 def login():
     path = "./Employees.xlsx"
     wb_obj = openpyxl.load_workbook(path)
@@ -124,17 +125,73 @@ def login():
 
 
 
+""" Admin funktioner och loopar """
 def skapa_ny_anvandare():
-    """ Här ska programmet göra en ny användare genom att lägga in användaren i excell dokumentet"""
-    print('gay shit (bokstavligt talat)')
-    time.sleep(0.5)
-    
+    path = "./Employees.xlsx"
+    wb_obj = openpyxl.load_workbook(path)
+    sheet_obj = wb_obj.active
+    max_ro = sheet_obj.max_row
+
+    while True:
+        try:
+            print()
+            new_nam = str(input('Förnamn: '))
+            new_eft_nam = str(input('Efternamn: '))
+            print()
+            role = int(input('User type:' +
+                                '\nAdmin (1)' + 
+                                '\nUser (2)'+ 
+                                '\nUnderage_user (3)' +
+                                '\nSvar: '))
+            new_user_password = str(input('Password: '))
+            new_user_password_check = str(input('Password check: '))
+
+            if new_user_password == new_user_password_check and role <=3 and role > 0:
+                print('\nOm följande stämmer:' + 
+                        '\n    Förnamn: ', new_nam +
+                        '\n    Efternamn: ', new_eft_nam +
+                        '\n    Password: ', new_user_password +
+                        '\n    Proffession: ', role)
+
+                ans_2 = int(input('\nTryck (1) om inte (2): '))
+
+                if ans_2 == 1:
+                    sheet_obj.cell(row=max_ro+1, column =1).value = f'{new_nam}'
+                    sheet_obj.cell(row=max_ro+1, column =2).value = f'{new_eft_nam}'
+                    sheet_obj.cell(row=max_ro+1, column =3).value = f'{new_user_password}'
+
+                    if role == 1:
+                        sheet_obj.cell(row=max_ro+1, column =5).value = 'Admin'
+
+                    elif role == 2:
+                        sheet_obj.cell(row=max_ro+1, column =5).value = 'User'
+                        money_ans = int(input('Hur mycket pengar har personen: '))
+                        sheet_obj.cell(row=max_ro+1, column =4).value = f'{money_ans}'
+
+                    elif role == 3:
+                        sheet_obj.cell(row=max_ro+1, column =5).value = 'Underage_user'
+                        money_ans = int(input('Hur mycket pengar har personen: '))
+                        sheet_obj.cell(row=max_ro+1, column =4).value = f'{money_ans}'
+
+                    wb_obj.save(r"./Employees.xlsx") 
+                    break
+                
+                elif ans_2 == 2:
+                    print('Försök igen!')
+            
+            else:
+                print('\nLösenorden stämmer inte överens försök igen!')
+
+        except Exception as s:
+            print('\nSvar är inte gilltigt försök igen!')
+
 
 
 def admin_loop(user):
     while True:
         try:
-            move_ans = int(input('\n<------------Vad vill du göra?------------>' + 
+            move_ans = int(input('\n<------------Vad vill du göra?' + 
+                            '------------>' + 
                             '\nSkapa ny användare (1)' + 
                             '\ngrej 2 (2)' + 
                             '\nLogga ut (3)' + 
@@ -147,6 +204,8 @@ def admin_loop(user):
                 break
 
             elif move_ans == 3:
+                print('Du loggas nu ut!')
+                time.sleep(1)
                 break
 
         except:
@@ -154,23 +213,48 @@ def admin_loop(user):
 
 
 
+""" User funktioner och loopar """
 def user_loop(user):
     while True:
         try:
-            move_ans = int(input('\n<------------Vad vill du göra?------------>' + 
+            move_ans = int(input('\n<------------Vad vill du göra?' +
+                            '------------>' + 
                             '\nMoney money money money... MONEY!(I falsett) (1)' + 
-                            '\ngrej 2 (2)' + 
+                            '\nByt lösenord (2)' + 
                             '\nLogga ut (3)' + 
                             '\nSvar: '))
 
             if move_ans == 1:
-                print('\nDet finns: ', user.check_account_balance(), ' svenska riksdaler på kontot.')
-                time.sleep(0.5)
+                try:
+                    print('\nDet finns: ' + str(user.check_account_balance()) +
+                                    ' svenska riksdaler på kontot.')
+                    time.sleep(0.5)
+                
+                except Exception as ghj:
+                    print(ghj)
 
             elif move_ans == 2:
-                break
+                path = "./Employees.xlsx"
+                wb_obj = openpyxl.load_workbook(path)
+                sheet_obj = wb_obj.active
+
+                while True:
+                    new_password = str(input('Nytt lösenord: '))
+                    new_password_check = str(input('Nytt lösenord: '))
+
+                    if new_password == new_password_check:
+                        sheet_obj.cell(row=user.return_row(), column =3).value = f'{new_password}'
+                        wb_obj.save(r"./Employees.xlsx") 
+                        print('Ditt lösenord är nu ändrat!')
+                        time.sleep(1)
+                        break
+
+                    else:
+                        print('Lösenorden stämmde inte överens försök igen!')
 
             elif move_ans == 3:
+                print('Du loggas nu ut!')
+                time.sleep(1)
                 break
 
         except:
@@ -178,19 +262,24 @@ def user_loop(user):
 
 
 
+""" Underage user funktioner och loopar """
 def underage_user_loop(user):
     while True:
         try:
-            move_ans = int(input('\n<------------Vad vill du göra?------------>' + 
+            move_ans = int(input('\n<------------Vad vill du göra?' +
+                            '------------>' + 
                             '\nMoney money money money... MONEY!(I falsett) (1)' + 
                             '\nLogga ut (2)' + 
                             '\nSvar: '))
 
             if move_ans == 1:
-                print('\nDet finns: ', user.check_account_balance(), ' svenska riksdaler på kontot.')
+                print('\nDet finns: ' + str(user.check_account_balance()) +
+                                ' svenska riksdaler på kontot.')
                 time.sleep(0.5)
 
             elif move_ans == 2:
+                print('Du loggas nu ut!')
+                time.sleep(1)
                 break
 
         except:
@@ -198,13 +287,15 @@ def underage_user_loop(user):
 
 
 
+""" API grej """
 def get_num():
-    x = requests.get('http://www.randomnumberapi.com/api/v1.0/random?min=100&max=1000&count=1')
+    x = requests.get('http://worldtimeapi.org/api/timezone/Europe/London.txt')
     gg = x.json()
-    print(gg[0])
+    print(gg['datetime'])
 
 
 
+""" Main Loop """
 if __name__ == '__main__':
     """ 
     Här ska de anställda hämtas in från excell filen med hjälp av 
@@ -236,7 +327,8 @@ if __name__ == '__main__':
                 print('Hej då!')
                 break
 
-        except:
+        except Exception as e:
+            print(e)
             print('Ditt svar är inte tillgängligt var god försök igen!')
             time.sleep(3)
 
