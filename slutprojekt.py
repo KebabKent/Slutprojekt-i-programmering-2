@@ -16,7 +16,6 @@ class Bank:
         self.role = role
         self.row = row
     
-    """ Här ska alla metoder som alla klasserna har gemensamma vara """
     def return_password(self):
         return self.__password
     
@@ -374,6 +373,7 @@ if __name__ == '__main__':
         except:
             print('Answer is not valid try again!')
             time.sleep(1)
+
 
 
 

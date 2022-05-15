@@ -30,8 +30,8 @@ change_password(). Frågar om det nya lösen ordet och sedan att man ska skriva 
 
 get_chuck(). Hämtar in ett Chuck Norris skämt från 'https://api.chucknorris.io/jokes/random' API:n och skriver ut det.
 
-
 ## UML-Diagram
+
 ![Skärmbild (3)](https://user-images.githubusercontent.com/91462301/153832079-8b6748ef-095a-4059-b765-bca62061a98a.png)
 
 ## Installation
