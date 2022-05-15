@@ -32,11 +32,9 @@ get_chuck(). Hämtar in ett Chuck Norris skämt från 'https://api.chucknorris.i
 
 ## UML-Diagram
 
-![Skärmbild (3)](https://user-images.githubusercontent.com/91462301/153832079-8b6748ef-095a-4059-b765-bca62061a98a.png)
+![Skärmbild (9)](https://user-images.githubusercontent.com/91462301/168466665-6c669984-057b-477e-9b37-c9c3184d39da.png)
 
-## Installation![Skärmbild (9)](https://user-images.githubusercontent.com/91462301/168466665-6c669984-057b-477e-9b37-c9c3184d39da.png)
-
-
+## Installation
 Det som behöver installeras för att köra programmet är Python biblioteken requests, openpyxl och getpwd.
 
 För att installera:
