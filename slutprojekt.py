@@ -3,7 +3,10 @@ import openpyxl
 from getpwd import getpwd
 import time
 
-
+# Jag har kommenterat på en nivå så att de som redan är 
+# bra på proggramering vet vad det är som händer 
+# med vissa generiska klass funktioner
+# och utan att upprepa samma kommentar på varje grej
 
 """ Klasser för anställda """
 class Bank:
@@ -23,7 +26,7 @@ class Bank:
     def return_role(self):
         return self.role
 
-class Admin(Bank):
+class Admin(Bank): # Admin klassen behövs egentligen inte men skulle se konstigt ut att inte ha en
     def __init__(self, name, password, role, row):
         super().__init__(name, password, role, row)
 
@@ -31,9 +34,6 @@ class User(Bank):
     def __init__(self, name, password, role, row, balance):
         super().__init__(name, password, role, row)
         self.balance = balance
-    
-    def shange_password(self):
-        pass
 
     def check_account_balance(self):
         return self.balance
@@ -51,9 +51,9 @@ class Underage_user(Bank):
 """ Loggar in användaren """
 def login():
     path = "./Employees.xlsx"
-    wb_obj = openpyxl.load_workbook(path)
+    wb_obj = openpyxl.load_workbook(path) # Öppnar excel
     sheet_obj = wb_obj.active
-    max_ro = sheet_obj.max_row
+    max_ro = sheet_obj.max_row # Högsta rad nummret 
 
     """ Kollar om användaren finns och vart den finns"""
     print('\n<--Loggin-->')
@@ -62,7 +62,7 @@ def login():
         user_surname = str(input('Surname: '))
 
         for xx in range(1, max_ro +1):
-            user_n = sheet_obj.cell(row = xx, column = 1)
+            user_n = sheet_obj.cell(row = xx, column = 1) # Ger informationen som står på rad xx, column 1
             user_surn = sheet_obj.cell(row = xx, column = 2)
 
             if user_n.value == user_name and user_surn.value == user_surname:
@@ -71,10 +71,10 @@ def login():
 
                 """ Tar lösenordet och loggar in användaren med användarnamnet """
                 for ii in range(3):
-                    password = getpwd() #Frågar om lösenord och gör så att man inte ser vad som skrivs in
+                    password = getpwd() #Frågar om lösenord och gör så att man inte ser vad som skrivs in i terminalen
                     pass_check = sheet_obj.cell(row = xx, column = 3)
 
-                    if password == pass_check.value:
+                    if password == pass_check.value: # .value gör infomrationen till en str
                         print('You had the right password!')
 
                         """ Gör ett klass objekt av användaren """
@@ -84,13 +84,15 @@ def login():
                         if role.value == 'User':
                             print('logged in as User')
                             balance = sheet_obj.cell(row = xx, column = 4)
-                            logged_in_user = User(user_n, pass_check.value, role.value, row, int(balance.value))
+                            logged_in_user = User(user_n, pass_check.value, 
+                                            role.value, row, int(balance.value)) 
                             return logged_in_user
                         
                         elif role.value == 'Underage_user':
                             print('logged in as Underage_user')
                             balance = sheet_obj.cell(row = xx, column = 4)
-                            logged_in_user = Underage_user(user_n, pass_check.value, role.value, row, int(balance.value))
+                            logged_in_user = Underage_user(user_n, pass_check.value, 
+                                            role.value, row, int(balance.value))
                             return logged_in_user
 
                         elif role.value == 'Admin':
@@ -101,7 +103,7 @@ def login():
                 break
         
         if user_n.value == user_name and user_surn.value == user_surname:
-            break
+            break # Stänger kvarvarande försök att skriva in rätt lösen och anvnam
         
         elif i<2:
             print('\nUser does not exist try again!\n')
@@ -112,6 +114,8 @@ def login():
             time.sleep(0.5)
 
 
+
+""" Funktion som byter lösenord på användaren. Kan användas av admin och user """
 def change_password(user):
     path = "./Employees.xlsx"
     wb_obj = openpyxl.load_workbook(path)
@@ -120,6 +124,7 @@ def change_password(user):
     while True:
         new_password = str(input('New password: '))
         new_password_check = str(input('New password: '))
+
         if new_password == new_password_check:
             sheet_obj.cell(row=user.return_row(), column =3).value = f'{new_password}'
             wb_obj.save(r"./Employees.xlsx") 
@@ -133,6 +138,7 @@ def change_password(user):
 
 
 """ Admin funktioner och loopar """
+""" Skapar ny användare """
 def create_new_user():
     path = "./Employees.xlsx"
     wb_obj = openpyxl.load_workbook(path)
@@ -141,7 +147,7 @@ def create_new_user():
 
     while True:
         try:
-            print()
+            print() # För snygghetens skull i terminalen
             new_name = str(input('First name: '))
             new_surname = str(input('Surname: '))
             role = int(input('\nUser type:' +
@@ -162,7 +168,7 @@ def create_new_user():
                 ans_2 = int(input('\nPress (1) if not press (2): '))
 
                 if ans_2 == 1:
-                    sheet_obj.cell(row=max_ro+1, column =1).value = f'{new_name}'
+                    sheet_obj.cell(row=max_ro+1, column =1).value = f'{new_name}' # Skriver in värdet i excel
                     sheet_obj.cell(row=max_ro+1, column =2).value = f'{new_surname}'
                     sheet_obj.cell(row=max_ro+1, column =3).value = f'{new_user_password}'
 
@@ -187,7 +193,7 @@ def create_new_user():
                         except:
                             print('Answer is not valid try again!')
 
-                    wb_obj.save(r"./Employees.xlsx") 
+                    wb_obj.save(r"./Employees.xlsx") # Sparar informationen som skrivits in i excel filen
                     break
                 
                 elif ans_2 == 2:
@@ -196,11 +202,12 @@ def create_new_user():
             else:
                 print('\nPassword is incorrect try again!')
 
-        except Exception as s:
+        except:
             print('\nAnswer is not valid try again!')
 
 
 
+""" Huvud funktion för admin """
 def admin_loop(user):
     while True:
         try:
@@ -218,7 +225,7 @@ def admin_loop(user):
             elif move_ans == 2:
                 change_password(user)
             
-            elif move_ans == 3:
+            elif move_ans == 3: # Kollar efter en användare som man sedan kan få information om                
                 path = "./Employees.xlsx"
                 wb_obj = openpyxl.load_workbook(path)
                 sheet_obj = wb_obj.active
@@ -226,30 +233,38 @@ def admin_loop(user):
 
                 users_name = str(input('\nUsers name: '))
                 users_surname = str(input('Users surname: '))
+                exist = False # Håller koll på om användaren finns eller inte
 
                 for ro in range(1, max_ro+1):
                     user_na = sheet_obj.cell(row = ro, column = 1)
                     user_surna = sheet_obj.cell(row = ro, column = 2)
 
                     if user_na.value == users_name and user_surna.value == users_surname:
+                        exist = True
                         ans_3 = int(input('\nWhat do you whant to know?' +
                                         '\nPassword (1)' + 
                                         '\nAccount balance (2)' +
                                         '\nUser type (3)' +
-                                        '\nNothin (4)' +
+                                        '\nNothing (4)' +
                                         '\nAnswer: '))
                         if ans_3 == 1:
                             print('Password: ' ,sheet_obj.cell(row = ro, column = 3).value)
+                            break
                         
                         elif ans_3 == 2:
                             print('Account balance: ' ,sheet_obj.cell(row = ro, column = 4).value)
+                            break
 
                         elif ans_3 == 3:
                             print('User type: ' ,sheet_obj.cell(row = ro, column = 5).value)
+                            break
                         
                         elif ans_3 == 4:
                             print('Ok then!')
                             break
+                    
+                if exist == False:
+                    print('User does not exist!')
 
             elif move_ans == 4:
                 print('Logging out!')
@@ -261,7 +276,7 @@ def admin_loop(user):
 
 
 
-""" User funktioner och loopar """
+""" User loop """
 def user_loop(user):
     while True:
         try:
@@ -274,12 +289,12 @@ def user_loop(user):
 
             if move_ans == 1:
                 try:
-                    print('\nThere are: ' + str(user.check_account_balance()) +
+                    print('\nThere are: ' + str(user.check_account_balance()) + # returnerar värdet som sattes in i kalssen
                                     ' Swedish kronor in the acccount.')
                     time.sleep(0.5)
                 
-                except Exception as ghj:
-                    print(ghj)
+                except:
+                    print('Sum-ting-wong!')
 
             elif move_ans == 2:
                 change_password(user)
@@ -294,7 +309,7 @@ def user_loop(user):
 
 
 
-""" Underage user funktioner och loopar """
+""" Underage user loop. Har minst rättigheter. Kan bara kolla pengar """
 def underage_user_loop(user):
     while True:
         try:
@@ -321,9 +336,9 @@ def underage_user_loop(user):
 
 """ API grej """
 def get_chuck():
-    chuck_req = requests.get('https://api.chucknorris.io/jokes/random')
+    chuck_req = requests.get('https://api.chucknorris.io/jokes/random') # Hämtar in information från API:n
     chuck = chuck_req.json()
-    print(chuck['value'] + '\n')
+    print(chuck['value'] + '\n') # Skriver ut information från API:n
 
 
 
@@ -352,13 +367,13 @@ if __name__ == '__main__':
                 print('\nGoodbye!')
                 print('Chucknorris joke:') 
                 get_chuck()
-                # Jag vet att den är in lallad men varför skulle 
-                # jag behöva en api till det här programmet
+                # Jag vet att den är in lallad men varför skulle jag 
+                # behöva en api till det här programmet från första början
                 break
 
         except:
             print('Answer is not valid try again!')
-            time.sleep(3)
+            time.sleep(1)
 
 
 
